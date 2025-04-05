@@ -1,5 +1,6 @@
 import logging
 import time
+import asyncio
 from datetime import datetime, timezone
 from typing import Dict, Optional
 
@@ -47,9 +48,8 @@ class RateLimitManager:
         """Maneja los límites de tasa con backoff exponencial."""
         while not (self.check_rate_limit(category, True) and
                    self.check_rate_limit(category, False)):
-            logger.warning(f"Rate limit alcanzado para {category}. "
-                           f"Esperando {self.backoff_time} segundos.")
-            time.sleep(self.backoff_time)
+            logger.warning(f"Rate limit alcanzado para {category}.")
+            await asyncio.sleep(self.backoff_time)
             self.backoff_time = min(self.backoff_time * 2, self.max_backoff_time)
 
         # Resetear el tiempo de backoff después de una solicitud exitosa

@@ -10,7 +10,7 @@ from typing import Dict, Optional, Union, List, Any
 
 import aiohttp
 import ntplib
-import uvicorn
+# Removed duplicate import of uvicorn
 import websockets
 from dotenv import load_dotenv
 from fastapi import FastAPI, Depends
@@ -26,7 +26,8 @@ from scripts.utils import generate_signature
 
 # Windows-specific asyncio policy
 if sys.platform == "win32":
-    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+    if sys.platform == "win32":
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 # Cargar configuración desde .env
 load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
@@ -113,8 +114,8 @@ async def fetch_data(session: aiohttp.ClientSession, url: str, params: Optional[
         logger.error(f"❌ Error en {url}: {response.status}")
         return None
 
-
-def _update_orderbook(bid_dict: Dict[str, float], ask_dict: Dict[str, float], data: Dict[str, Any]) -> None:
+# Removed unused function _update_orderbook
+# Removed unused function _update_orderbook
     for price_str, qty_str in data["data"]["b"]:
         price = float(price_str)
         qty = float(qty_str)
@@ -853,8 +854,8 @@ class NertzMetalEngine:
             elif decision == "sell" and available_btc < config.MIN_TRADE_SIZE:
                 logger.warning(f"⚠️ Cantidad insuficiente de BTC ({available_btc:.8f}) para vender en {symbol}")
                 return
-
-            risk_per_trade = self.capital * config.RISK_FACTOR
+            # Removed unused variable risk_per_trade
+            # Removed unused variable risk_per_trade
             volatility = metrics.get("volatility", 0.01)
             if volatility <= 0:
                 logger.warning(f"⚠️ Volatilidad inválida ({volatility}) para {symbol}")
@@ -1132,8 +1133,7 @@ class NertzMetalEngine:
 
             # No llamamos a _save_results aquí, se manejará dentro de _execute_trade
             await self._execute_trade(symbol, db)
-
-    async def _place_order(self, symbol: str, action: str, quantity: float, price: float, tp: float, sl: float,
+    async def _place_order(self, symbol: str, action: str, quantity: float, price: float,
                            fixed_timestamp: int = None) -> dict[str, Union[str, bool]]:
         global available_btc, available_usdt
         max_retries = 3
@@ -1141,8 +1141,8 @@ class NertzMetalEngine:
         current_recv_window = base_recv_window
         max_delay = 15
         session = None
-        insufficient_balance = False
-        last_error = None
+        # Removed unused variable last_error
+        # Removed unused variable last_error
 
         if not symbol or not isinstance(symbol, str):
             logger.error(f"❌ Símbolo inválido: {symbol}")
@@ -1516,7 +1516,6 @@ class NertzMetalEngine:
             if self.error_count >= self.max_errors:
                 logger.critical(f"❌ Demasiados errores ({self.error_count}). Deteniendo bot.")
                 self.running = False
-
     async def _save_results(self, symbol: str, trade_result: Optional[Trade] = None) -> None:
         try:
             with SessionLocal() as db:
@@ -1770,9 +1769,8 @@ async def update_thresholds(egm_buy_threshold: float, egm_sell_threshold: float)
     return {"message": "Umbrales actualizados"}
 
 
-@app.get("/orderbook/{symbol}")
+async def get_orderbook(symbol: str) -> Dict[str, Union[str, List[List[str]]]]:
 async def get_orderbook(symbol: str, db: Session = Depends(get_db)) -> Dict[str, Union[str, List[List[str]]]]:
-    orderbook = bot.orderbook_data.get(symbol, {"bids": [], "asks": []})
     return {
         "symbol": symbol,
         "bids": orderbook["bids"],
@@ -1794,10 +1792,9 @@ async def get_candles(symbol: str, limit: int = 5, db: Session = Depends(get_db)
     }
 
 
-@app.get("/trades/{symbol}")
+async def get_trades(symbol: str) -> Dict[
 async def get_trades(symbol: str, db: Session = Depends(get_db)) -> Dict[
-    str, Union[str, List[Dict[str, Union[str, float, int]]]]]:
-    trades = bot.positions.get(symbol, [])
+async def get_trades(symbol: str, db: Session = Depends(get_db)) -> Dict[str, Union[str, List[Dict[str, Union[str, float, int]]]]]:
     return {
         "symbol": symbol,
         "trades": trades,

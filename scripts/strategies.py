@@ -13,7 +13,7 @@ class BaseStrategy:
         self.name = "base_strategy"
         self.description = "Estrategia base para el trading"
 
-    def analyze_market(self, symbol: str, candle_data: List[Dict], orderbook: Dict, ticker: Dict) -> Dict:
+    def analyze_market(self, candle_data: List[Dict], orderbook: Dict, ticker: Dict) -> Dict:
         """Analiza las condiciones del mercado y retorna métricas con análisis de balance."""
         metrics = calculate_metrics(candle_data, orderbook, ticker)
 
@@ -28,7 +28,7 @@ class BaseStrategy:
 
         return metrics
 
-    def should_trade(self, metrics: Dict, available_btc: float) -> Tuple[str, str]:
+    def should_trade(self, metrics: Dict) -> Tuple[str, str]:
         """Determina si se debe realizar una operación basada en las métricas y el estado del mercado."""
         # Extracción de métricas con valores por defecto seguros
         combined = metrics.get('combined', 0)

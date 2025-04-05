@@ -2,7 +2,8 @@ from datetime import datetime
 from typing import Optional
 
 from sqlalchemy import Integer, String, Float, DateTime, JSON
-from sqlalchemy.orm import declarative_base, Mapped, mapped_column
+from sqlalchemy.orm import declarative_base, Mapped
+from sqlalchemy.orm import MappedColumn as mapped_column
 
 Base = declarative_base()
 

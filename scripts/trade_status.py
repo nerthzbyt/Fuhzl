@@ -3,7 +3,17 @@ from datetime import datetime, timezone
 from enum import Enum, auto
 from typing import Dict, Optional
 
-from scripts.settings import ConfigSettings
+# Define a mock ConfigSettings class for demonstration purposes
+class ConfigSettings:
+    MAX_VOLATILITY = 0.05
+    MAX_SPREAD = 0.02
+    TARGET_SPREAD = 0.01
+    MIN_MARKET_DEPTH = 1000
+    TARGET_MARKET_DEPTH = 2000
+    MIN_24H_VOLUME = 50000
+    MAX_OPEN_ORDERS = 10
+    MAX_ORDER_RETRIES = 3
+    TRADE_COOLDOWN = 60
 
 logger = logging.getLogger("NertzMetalEngine")
 config = ConfigSettings()

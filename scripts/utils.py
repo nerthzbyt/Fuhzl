@@ -130,6 +130,8 @@ def calculate_tp_sl(price: float, volatility: float, action: str, tp_factor: flo
 
 class BaseTradingStrategy:
     def __init__(self, connector=None, data_manager=None, **kwargs):
+        if kwargs:
+            self.logger.debug(f"Unused kwargs: {kwargs}")
         self.logger = logging.getLogger("NertzMetalEngine")
         self.connector = connector
         self.data_manager = data_manager

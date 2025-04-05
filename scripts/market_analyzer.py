@@ -56,7 +56,7 @@ class MarketAnalyzer:
             return {}
 
         history = self.metrics_history[symbol]
-        combined_values = [m['combined'] for m in history]
+        combined_values = [m.get('combined', 0) for m in history]
         volume_values = [m.get('volume', 0) for m in history]
         price_values = [m.get('price', 0) for m in history]
 
